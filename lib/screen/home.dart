@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:todo_app/constant/color.dart';
@@ -12,6 +13,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var items = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+    log(items.toString());
+  }
+
   final searchController = TextEditingController();
 
   @override
@@ -41,8 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       ...List.generate(
-                        5,
-                        (index) => const ToDoItem(),
+                        items.length,
+                        (index) => ToDoItem(
+                          title: items[index]['title'],
+                        ),
                       ),
                     ],
                   ),
@@ -164,6 +175,38 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       searchController.clear();
     });
+  }
+
+  Future<void> fetchData() async {
+    const url = 'https://api.nstack.in/v1/todos';
+    final uri = Uri.parse(url);
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+
+      final result = json['items'] as List;
+      log(result.toString());
+      setState(() {
+        items = result;
+      });
+    } else {
+      showErrorMessage(response.statusCode.toString());
+    }
+  }
+
+  Future<void> deleteData(String id) async {
+    final url = 'https://api.nstack.in/v1/todos/$id';
+    final uri = Uri.parse(url);
+
+    final response = await http.delete(uri);
+
+    if (response.statusCode == 200) {
+      showSuccessMessage(response.body);
+    } else {
+      showErrorMessage(response.statusCode.toString());
+    }
   }
 
   void showSuccessMessage(String message) {

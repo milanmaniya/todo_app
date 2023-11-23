@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/constant/color.dart';
 
 class ToDoItem extends StatefulWidget {
+  final String title;
   const ToDoItem({
     Key? key,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -25,9 +27,9 @@ class _ToDoItemState extends State<ToDoItem> {
           borderRadius: BorderRadius.circular(20),
         ),
         tileColor: Colors.white,
-        title: const Text(
-          'good morning',
-          style: TextStyle(
+        title: Text(
+          widget.title,
+          style: const TextStyle(
             color: tdBlack,
             fontSize: 16,
           ),
