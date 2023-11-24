@@ -33,29 +33,32 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 searchBox(),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 50, bottom: 20),
-                        child: const Text(
-                          'All To Dos',
-                          style: TextStyle(
-                            color: tdBlack,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w600,
-                          ),
+                Container(
+                  margin: const EdgeInsets.only(top: 50, bottom: 20),
+                  child: const Text(
+                    'All To Dos',
+                    style: TextStyle(
+                      color: tdBlack,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                RefreshIndicator(
+                  onRefresh: fetchData,
+                  child: Expanded(
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) => ToDoItem(
+                        title: items[index]['title'], 
+                        onDelete: () => deleteData(
+                          id: items[index]['_id'],
                         ),
                       ),
-                      ...List.generate(
-                        items.length,
-                        (index) => ToDoItem(
-                          title: items[index]['title'],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ],
@@ -196,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> deleteData(String id) async {
+  Future<void> deleteData({id}) async {
     final url = 'https://api.nstack.in/v1/todos/$id';
     final uri = Uri.parse(url);
 

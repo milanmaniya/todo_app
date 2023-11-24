@@ -4,9 +4,11 @@ import 'package:todo_app/constant/color.dart';
 
 class ToDoItem extends StatefulWidget {
   final String title;
+  final VoidCallback onDelete;
   const ToDoItem({
     Key? key,
     required this.title,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -44,11 +46,8 @@ class _ToDoItemState extends State<ToDoItem> {
                 },
               ),
               PopupMenuItem(
+                onTap: widget.onDelete,
                 child: const Text('Delete'),
-                onTap: () {
-                  setState(() {});
-                  log('Delete is pressed');
-                },
               ),
             ];
           },
