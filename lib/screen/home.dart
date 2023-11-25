@@ -47,13 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                RefreshIndicator(
-                  onRefresh: fetchData,
-                  child: Expanded(
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: fetchData,
                     child: ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) => ToDoItem(
-                        title: items[index]['title'], 
+                        title: items[index]['title'],
                         onDelete: () => deleteData(
                           id: items[index]['_id'],
                         ),
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchData() async {
-    const url = 'https://api.nstack.in/v1/todos';
+    const url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
     final uri = Uri.parse(url);
 
     final response = await http.get(uri);
