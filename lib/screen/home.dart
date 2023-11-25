@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:todo_app/constant/color.dart';
@@ -14,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var items = [];
+
+  get children => null;
   @override
   void initState() {
     super.initState();
@@ -48,15 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: fetchData,
-                    child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) => ToDoItem(
-                        title: items[index]['title'],
-                        onDelete: () => deleteData(
-                          id: items[index]['_id'],
-                        ),
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) => ToDoItem(
+                      index: index,
+                      title: items[index]['title'],
+                      onDelete: () => deleteData(
+                        id: items[index]['_id'],
                       ),
                     ),
                   ),
