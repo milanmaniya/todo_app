@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var items = [];
+  bool isVisible = false;
 
   get children => null;
   @override
@@ -48,18 +49,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
+                ), 
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) => ToDoItem(
-                      index: index,
-                      title: items[index]['title'],
-                      onDelete: () => deleteData(
-                        id: items[index]['_id'],
+                  child: RefreshIndicator(
+                    onRefresh: fetchData,
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) => ToDoItem(
+                        index: index,
+                        title: items[index]['title'],
+                        onDelete: () => deleteData(
+                          id: items[index]['_id'],
+                        ),
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 55,
                 ),
               ],
             ),
@@ -200,7 +207,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> deleteData({id}) async {
+  Future<void> deleteData({id, isVisible}) async {
+    setState(() {
+      isVisible = false;
+    });
     final url = 'https://api.nstack.in/v1/todos/$id';
     final uri = Uri.parse(url);
 
@@ -209,8 +219,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       showSuccessMessage(response.body);
     } else {
-      showErrorMessage(response.statusCode.toString());
+      showErrorMessage(
+        response.statusCode.toString(),
+      );
     }
+
+    setState(() {
+      isVisible = true;
+    });
   }
 
   void showSuccessMessage(String message) {
